@@ -29,6 +29,8 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+
     FlameAudio.bgm.initialize();
     await FlameAudio.bgm.load('music/music.mp3');
     await FlameAudio.bgm.play('music/music.mp3', volume: 0.1);

@@ -16,6 +16,8 @@ class Background extends SpriteComponent with Tappable {
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+    
     // Get the width and height of our screen canvas
     screenWidth = MediaQueryData.fromWindow(window).size.width;
     screenHeight = MediaQueryData.fromWindow(window).size.height;

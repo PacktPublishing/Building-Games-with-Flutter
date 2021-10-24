@@ -9,6 +9,8 @@ class Skeleton extends EnemyCharacter {
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+    
     var spriteImages = await Flame.images.load('zombie_n_skeleton.png');
     final spriteSheet = SpriteSheet(image: spriteImages, srcSize: size);
 

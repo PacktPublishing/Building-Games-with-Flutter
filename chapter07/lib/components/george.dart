@@ -23,6 +23,8 @@ class George extends Character {
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+    
     walkingSpeed = speed;
     runningSpeed = speed * 2;
 

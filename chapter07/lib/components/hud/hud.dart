@@ -14,6 +14,8 @@ class HudComponent extends PositionComponent {
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+    
     final joystickKnobPaint = BasicPalette.blue.withAlpha(200).paint();
     final joystickBackgroundPaint = BasicPalette.blue.withAlpha(100).paint();
     final buttonRunPaint = BasicPalette.red.withAlpha(200).paint();
