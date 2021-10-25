@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:goldrush/components/character.dart';
@@ -17,7 +18,7 @@ void main() async {
   // Setup Flutter widgets and start the game in full screen portrait orientation
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.fullScreen();
-  await Flame.device.setPortrait();
+  await Flame.device.setLandscape();
   
   // Run the app, passing the games widget here
   runApp(
@@ -37,8 +38,13 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
 
     var hud = HudComponent();
     var george = George(hud: hud, position: Vector2(200, 400), size: Vector2(48.0, 48.0), speed: 40.0);
-    add(Background(george));
     add (george);
+
+    add(Background(george));
+
+    final tiledMap = await TiledComponent.load('tiles.tmx', Vector2.all(32));
+    add(tiledMap);
+
     add (Zombie(position: Vector2(100, 200), size: Vector2(32.0, 64.0), speed: 20.0));
     add (Zombie(position: Vector2(300, 200), size: Vector2(32.0, 64.0), speed: 20.0));
     add (Skeleton(position: Vector2(100, 600), size: Vector2(32.0, 64.0), speed: 60.0));
