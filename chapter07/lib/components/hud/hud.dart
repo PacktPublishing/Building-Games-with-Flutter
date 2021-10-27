@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 
 class HudComponent extends PositionComponent {
 
+  HudComponent() : super(priority: 10);
+
   late Joystick joystick;
   late RunButton runButton;
   late ScoreText scoreText;
@@ -15,6 +17,8 @@ class HudComponent extends PositionComponent {
   @override
   Future<void> onLoad() async {
     super.onLoad();
+    
+    isHud = true;
     
     final joystickKnobPaint = BasicPalette.blue.withAlpha(200).paint();
     final joystickBackgroundPaint = BasicPalette.blue.withAlpha(100).paint();

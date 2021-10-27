@@ -47,6 +47,8 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
     final tiledMap = await TiledComponent.load('tiles.tmx', Vector2.all(32));
     add(tiledMap);
 
+    add(hud);
+
     final enemies = tiledMap.tileMap.getObjectGroupFromLayer('Enemies');
     enemies.objects.asMap().forEach((index, position) {
       if (index % 2 == 0) {
@@ -66,8 +68,8 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
       add(Coin(position: Vector2(posCoinX, posCoinY), size: Vector2(20, 20)));
     }
 
-    add(ScreenCollidable()); 
-    add(hud);
+    camera.speed = 1;
+    camera.followComponent(george, worldBounds: Rect.fromLTWH(0, 0, 1600, 1600));
   }
   
   @override
