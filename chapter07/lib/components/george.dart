@@ -5,6 +5,7 @@ import 'package:flame/sprite.dart';
 import 'package:goldrush/components/hud/hud.dart';
 import 'package:goldrush/components/skeleton.dart';
 import 'package:goldrush/components/zombie.dart';
+import 'package:goldrush/components/coin.dart';
 import 'package:goldrush/utils/math_utils.dart';
 import 'package:flame/input.dart';
 import 'character.dart';
@@ -42,7 +43,7 @@ class George extends Character {
 
     addHitbox(HitboxRectangle());
 
-    await FlameAudio.audioCache.loadAll(['sounds/enemy_dies.wav', 'sounds/running.wav']);
+    await FlameAudio.audioCache.loadAll(['sounds/enemy_dies.wav', 'sounds/running.wav', 'sounds/coin.wav']);
   }
 
   void moveToLocation(TapUpInfo info) {
@@ -59,6 +60,13 @@ class George extends Character {
       hud.scoreText.setScore(10);
 
       FlameAudio.play('sounds/enemy_dies.wav', volume: 1.0);
+    }
+
+    if (other is Coin) {
+      other.removeFromParent();
+      hud.scoreText.setScore(20);
+
+      FlameAudio.play('sounds/coin.wav', volume: 1.0);
     }
   }
 

@@ -7,19 +7,17 @@
   </data>
  </layer>
  <objectgroup id="2" name="Enemies" visible="0">
-  <object id="7" gid="47" x="61.7778" y="66" width="32" height="32"/>
-  <object id="8" gid="47" x="126.593" y="164.148" width="32" height="32"/>
-  <object id="9" gid="47" x="130.296" y="253.037" width="32" height="32"/>
-  <object id="10" gid="47" x="130.296" y="478.963" width="32" height="32"/>
-  <object id="11" gid="47" x="124.741" y="612.296" width="32" height="32"/>
+  <object id="7" gid="47" x="975.778" y="284" width="32" height="32"/>
+  <object id="8" gid="47" x="904.593" y="1418.15" width="32" height="32"/>
+  <object id="9" gid="47" x="230.296" y="245.037" width="32" height="32"/>
+  <object id="11" gid="47" x="622.741" y="1362.3" width="32" height="32"/>
   <object id="12" gid="47" x="217.333" y="599.333" width="32" height="32"/>
-  <object id="13" gid="47" x="426.593" y="660.444" width="32" height="32"/>
-  <object id="14" gid="47" x="502.519" y="530.815" width="32" height="32"/>
-  <object id="15" gid="47" x="495.111" y="306.741" width="32" height="32"/>
-  <object id="16" gid="47" x="335.852" y="282.667" width="32" height="32"/>
-  <object id="17" gid="47" x="265.481" y="182.667" width="32" height="32"/>
-  <object id="18" gid="47" x="289.556" y="388.222" width="32" height="32"/>
-  <object id="19" gid="47" x="387.704" y="453.037" width="32" height="32"/>
-  <object id="20" gid="47" x="317.333" y="517.852" width="32" height="32"/>
+  <object id="13" gid="47" x="492.593" y="1068.44" width="32" height="32"/>
+  <object id="14" gid="47" x="230.519" y="1382.82" width="32" height="32"/>
+  <object id="15" gid="47" x="1257.11" y="620.741" width="32" height="32"/>
+  <object id="16" gid="47" x="1019.85" y="1032.67" width="32" height="32"/>
+  <object id="17" gid="47" x="1339.48" y="266.667" width="32" height="32"/>
+  <object id="18" gid="47" x="1227.56" y="1306.22" width="32" height="32"/>
+  <object id="19" gid="47" x="489.704" y="429.037" width="32" height="32"/>
  </objectgroup>
 </map>

@@ -8,8 +8,10 @@ import 'package:goldrush/components/hud/hud.dart';
 import 'package:goldrush/components/zombie.dart';
 import 'package:goldrush/components/skeleton.dart';
 import 'components/background.dart';
+import 'components/coin.dart';
 import 'components/george.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'dart:math';
 
 void main() async {
   // Create an instance of the game
@@ -45,10 +47,25 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
     final tiledMap = await TiledComponent.load('tiles.tmx', Vector2.all(32));
     add(tiledMap);
 
-    add (Zombie(position: Vector2(100, 200), size: Vector2(32.0, 64.0), speed: 20.0));
-    add (Zombie(position: Vector2(300, 200), size: Vector2(32.0, 64.0), speed: 20.0));
-    add (Skeleton(position: Vector2(100, 600), size: Vector2(32.0, 64.0), speed: 60.0));
-    add (Skeleton(position: Vector2(300, 600), size: Vector2(32.0, 64.0), speed: 60.0));
+    final enemies = tiledMap.tileMap.getObjectGroupFromLayer('Enemies');
+    enemies.objects.asMap().forEach((index, position) {
+      if (index % 2 == 0) {
+        add(Skeleton(position: Vector2(position.x, position.y), size: Vector2(32.0, 64.0), speed: 60.0));
+      } else {
+        add (Zombie(position: Vector2(position.x, position.y), size: Vector2(32.0, 64.0), speed: 20.0));
+      }
+    });
+
+    Random random = Random(DateTime.now().millisecondsSinceEpoch);
+    for (int i = 0; i < 50; i++) {
+      int randomX = random.nextInt(48) + 1;
+      int randomY = random.nextInt(48) + 1;
+      double posCoinX = (randomX * 32) + 5;
+      double posCoinY = (randomY * 32) + 5;
+
+      add(Coin(position: Vector2(posCoinX, posCoinY), size: Vector2(20, 20)));
+    }
+
     add(ScreenCollidable()); 
     add(hud);
   }
