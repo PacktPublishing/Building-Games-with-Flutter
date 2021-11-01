@@ -4,6 +4,7 @@ import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:goldrush/components/hud/hud.dart';
 import 'package:goldrush/components/skeleton.dart';
+import 'package:goldrush/components/water.dart';
 import 'package:goldrush/components/zombie.dart';
 import 'package:goldrush/components/coin.dart';
 import 'package:goldrush/utils/math_utils.dart';
@@ -21,11 +22,13 @@ class George extends Character {
   bool movingToTouchedLocation = false;
   bool isMoving = false;
   late AudioPlayer audioPlayerRunning;
+  int collisionDirection = Character.down;
+  bool hasCollided = false;
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    
+
     walkingSpeed = speed;
     runningSpeed = speed * 2;
 
@@ -41,7 +44,7 @@ class George extends Character {
     playing = false;
     anchor = Anchor.center;
 
-    addHitbox(HitboxRectangle());
+    addHitbox(HitboxRectangle(relation: Vector2(0.7, 0.7))..relativeOffset = Vector2(0.0, 0.1));
 
     await FlameAudio.audioCache.loadAll(['sounds/enemy_dies.wav', 'sounds/running.wav', 'sounds/coin.wav']);
   }
@@ -68,6 +71,22 @@ class George extends Character {
 
       FlameAudio.play('sounds/coin.wav', volume: 1.0);
     }
+
+    if (other is Water) {
+      if (!hasCollided) {
+        if (movingToTouchedLocation) {
+            movingToTouchedLocation = false;
+        } else {
+          hasCollided = true;
+          collisionDirection = currentDirection;
+        }
+      }
+    }
+  }
+
+  @override
+  void onCollisionEnd(Collidable other) {
+    hasCollided = false;
   }
 
   @override
@@ -77,9 +96,10 @@ class George extends Character {
     speed = hud.runButton.buttonPressed ? runningSpeed : walkingSpeed;
 
     if (!hud.joystick.delta.isZero()) {
-      position.add(hud.joystick.relativeDelta * speed * dt);
+      movePlayer(dt);
       playing = true;
       movingToTouchedLocation = false;
+
       if (!isMoving) {
         isMoving = true;
         audioPlayerRunning = await FlameAudio.loopLongAudio('sounds/running.wav', volume: 1.0);
@@ -117,8 +137,7 @@ class George extends Character {
           audioPlayerRunning = await FlameAudio.loopLongAudio('sounds/running.wav', volume: 1.0);
         }
 
-        position += (targetLocation - position).normalized() * (speed * dt);
-
+        movePlayer(dt);
         double threshhold = 1.0;
         var difference = targetLocation - position;
         if (difference.x.abs() < threshhold && difference.y.abs() < threshhold) {
@@ -132,6 +151,7 @@ class George extends Character {
         }
 
         playing = true;
+
         var angle = getAngle(position, targetLocation);
         if ((angle > 315 && angle < 360) || (angle > 0 && angle < 45) ) { // Moving right
           animation = rightAnimation;
@@ -156,6 +176,29 @@ class George extends Character {
         if (isMoving) {
           isMoving = false;
           audioPlayerRunning.stop();
+        }
+      }
+    }
+  }
+
+  void movePlayer(double delta) {
+    if (!(hasCollided && collisionDirection == currentDirection)) {
+      if (movingToTouchedLocation) {
+        position.add((targetLocation - position).normalized() * (speed * delta));
+      } else {
+        switch (currentDirection) {
+          case Character.left:
+            position.add(Vector2(delta * -speed, 0));
+          break;
+          case Character.right:
+            position.add(Vector2(delta * speed, 0));
+          break;
+          case Character.up:
+            position.add(Vector2(0, delta * -speed));
+          break;
+          case Character.down:
+            position.add(Vector2(0, delta * speed));
+          break;
         }
       }
     }

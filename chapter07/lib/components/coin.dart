@@ -11,11 +11,12 @@ class Coin extends SpriteAnimationComponent with Hitbox, Collidable {
   Future<void> onLoad() async {
     super.onLoad();
     
+    collidableType = CollidableType.passive;
+    
     var spriteImages = await Flame.images.load('coins.png');
     final spriteSheet = SpriteSheet(image: spriteImages, srcSize: size);
 
     animation = spriteSheet.createAnimation(row: 0, stepTime: 0.1, from: 0, to: 7);
-    
     addHitbox(HitboxRectangle());
   }
 }

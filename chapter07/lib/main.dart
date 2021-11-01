@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:goldrush/components/character.dart';
 import 'package:goldrush/components/hud/hud.dart';
+import 'package:goldrush/components/water.dart';
 import 'package:goldrush/components/zombie.dart';
 import 'package:goldrush/components/skeleton.dart';
 import 'components/background.dart';
@@ -67,6 +68,11 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
 
       add(Coin(position: Vector2(posCoinX, posCoinY), size: Vector2(20, 20)));
     }
+
+    final water = tiledMap.tileMap.getObjectGroupFromLayer('Water');
+    water.objects.forEach((rect) {
+      add(Water(position: Vector2(rect.x, rect.y), size: Vector2(rect.width, rect.height), id: rect.id));
+    });
 
     camera.speed = 1;
     camera.followComponent(george, worldBounds: Rect.fromLTWH(0, 0, 1600, 1600));
