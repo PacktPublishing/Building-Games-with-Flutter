@@ -13,17 +13,16 @@ import 'components/coin.dart';
 import 'components/george.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'dart:math';
+import 'package:goldrush/components/tilemap.dart';
+import 'package:goldrush/utils/math_utils.dart';
 
 void main() async {
-  // Create an instance of the game
   final myGame = MyGame();
 
-  // Setup Flutter widgets and start the game in full screen portrait orientation
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.fullScreen();
   await Flame.device.setLandscape();
   
-  // Run the app, passing the games widget here
   runApp(
     GameWidget(game: myGame)
   );
@@ -35,27 +34,30 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
   Future<void> onLoad() async {
     super.onLoad();
 
+    Rect gameScreenBounds = getGameScreenBounds(canvasSize);
+
     FlameAudio.bgm.initialize();
     await FlameAudio.bgm.load('music/music.mp3');
     await FlameAudio.bgm.play('music/music.mp3', volume: 0.1);
 
     var hud = HudComponent();
-    var george = George(hud: hud, position: Vector2(200, 400), size: Vector2(48.0, 48.0), speed: 40.0);
+    var george = George(hud: hud, position: Vector2(gameScreenBounds.left + 300, gameScreenBounds.top + 300), size: Vector2(48.0, 48.0), speed: 40.0);
     add (george);
+    changePriority(george, 15);
 
     add(Background(george));
 
     final tiledMap = await TiledComponent.load('tiles.tmx', Vector2.all(32));
-    add(tiledMap);
-
+    add(TileMapComponent(tiledMap));
     add(hud);
 
     final enemies = tiledMap.tileMap.getObjectGroupFromLayer('Enemies');
     enemies.objects.asMap().forEach((index, position) {
+
       if (index % 2 == 0) {
-        add(Skeleton(position: Vector2(position.x, position.y), size: Vector2(32.0, 64.0), speed: 60.0));
+        add(Skeleton(position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 60.0));
       } else {
-        add (Zombie(position: Vector2(position.x, position.y), size: Vector2(32.0, 64.0), speed: 20.0));
+        add (Zombie(position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 20.0));
       }
     });
 
@@ -63,19 +65,19 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
     for (int i = 0; i < 50; i++) {
       int randomX = random.nextInt(48) + 1;
       int randomY = random.nextInt(48) + 1;
-      double posCoinX = (randomX * 32) + 5;
-      double posCoinY = (randomY * 32) + 5;
+      double posCoinX = (randomX * 32) + 5 + gameScreenBounds.left;
+      double posCoinY = (randomY * 32) + 5 + gameScreenBounds.top;
 
       add(Coin(position: Vector2(posCoinX, posCoinY), size: Vector2(20, 20)));
     }
 
     final water = tiledMap.tileMap.getObjectGroupFromLayer('Water');
     water.objects.forEach((rect) {
-      add(Water(position: Vector2(rect.x, rect.y), size: Vector2(rect.width, rect.height), id: rect.id));
+      add(Water(position: Vector2(rect.x + gameScreenBounds.left, rect.y + gameScreenBounds.top), size: Vector2(rect.width, rect.height), id: rect.id));
     });
 
     camera.speed = 1;
-    camera.followComponent(george, worldBounds: Rect.fromLTWH(0, 0, 1600, 1600));
+    camera.followComponent(george, worldBounds: Rect.fromLTWH(gameScreenBounds.left, gameScreenBounds.top, 1600, 1600));
   }
   
   @override

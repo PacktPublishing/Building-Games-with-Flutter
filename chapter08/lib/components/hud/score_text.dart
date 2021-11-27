@@ -1,11 +1,10 @@
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
-import 'package:flutter/cupertino.dart';
 
 class ScoreText extends HudMarginComponent {
 
-  ScoreText({EdgeInsets? margin}) : super (margin: margin);
+  ScoreText({Vector2? position}) : super (position: position);
 
   int score = 0;
   String scoreText = "Score: ";

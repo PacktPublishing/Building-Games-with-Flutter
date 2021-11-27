@@ -1,5 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+import 'package:goldrush/utils/math_utils.dart';
+import 'package:flame/extensions.dart';
 
 // Base class for all our sprites
 class Character extends SpriteAnimationComponent with Hitbox, Collidable {
@@ -15,9 +17,18 @@ class Character extends SpriteAnimationComponent with Hitbox, Collidable {
   double elapsedTime = 0.0;
   int currentDirection = down;
   static const int down = 0, left = 1, up = 2, right = 3;
+  late Vector2 originalPosition;
 
   void onPaused() {}
   void onResumed() {}
+
+  @override
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+
+    Rect gameScreenBounds = getGameScreenBounds(canvasSize);
+    position = Vector2(originalPosition.x + gameScreenBounds.left, originalPosition.y + gameScreenBounds.top);
+  }
 }
 
 extension CreateAnimationByColumn on SpriteSheet {

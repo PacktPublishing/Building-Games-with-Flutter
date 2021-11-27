@@ -14,7 +14,10 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class George extends Character {
-  George({required this.hud, required Vector2 position, required Vector2 size, required double speed}) : super(position: position, size: size, speed: speed);
+
+  George({required this.hud, required Vector2 position, required Vector2 size, required double speed}) : super(position: position, size: size, speed: speed) {
+    originalPosition = position;
+  }
 
   final HudComponent hud;
   late double walkingSpeed, runningSpeed;

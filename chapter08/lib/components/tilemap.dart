@@ -1,20 +1,15 @@
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
-import 'george.dart';
+import 'package:flame_tiled/flame_tiled.dart';
+import 'package:flutter/material.dart';
 import 'package:goldrush/utils/math_utils.dart';
-import 'dart:ui';
 
-class Background extends SpriteComponent with Tappable {
+class TileMapComponent extends PositionComponent {
 
-  Background(this.george) : super(priority: 20);
-
-  final George george;
-
-  @override
-  bool onTapUp(TapUpInfo info) {
-    george.moveToLocation(info);
-    return true;
+  TileMapComponent(this.tiledComponent) {
+    add(tiledComponent);
   }
+
+  TiledComponent tiledComponent;
 
   @override
   void onGameResize(Vector2 canvasSize) {
