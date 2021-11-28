@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
+import 'package:flutter/services.dart';
 import 'package:goldrush/components/hud/hud.dart';
 import 'package:goldrush/components/skeleton.dart';
 import 'package:goldrush/components/water.dart';
@@ -13,7 +14,7 @@ import 'character.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-class George extends Character {
+class George extends Character with KeyboardHandler {
 
   George({required this.hud, required Vector2 position, required Vector2 size, required double speed}) : super(position: position, size: size, speed: speed) {
     originalPosition = position;
@@ -27,6 +28,7 @@ class George extends Character {
   late AudioPlayer audioPlayerRunning;
   int collisionDirection = Character.down;
   bool hasCollided = false;
+  bool keyLeftPressed = false, keyRightPressed = false, keyUpPressed = false, keyDownPressed = false, keyRunningPressed = false;
 
   @override
   Future<void> onLoad() async {
@@ -50,6 +52,18 @@ class George extends Character {
     addHitbox(HitboxRectangle(relation: Vector2(0.7, 0.7))..relativeOffset = Vector2(0.0, 0.1));
 
     await FlameAudio.audioCache.loadAll(['sounds/enemy_dies.wav', 'sounds/running.wav', 'sounds/coin.wav']);
+  }
+
+
+  @override
+  bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    if (event.data.keyLabel.toLowerCase().contains('a')) { keyLeftPressed = (event is RawKeyDownEvent); }
+    if (event.data.keyLabel.toLowerCase().contains('d')) { keyRightPressed = (event is RawKeyDownEvent); }
+    if (event.data.keyLabel.toLowerCase().contains('w')) { keyUpPressed = (event is RawKeyDownEvent); }
+    if (event.data.keyLabel.toLowerCase().contains('s')) { keyDownPressed = (event is RawKeyDownEvent); }
+    if (event.data.keyLabel.toLowerCase().contains('r')) { keyRunningPressed = (event is RawKeyDownEvent); }
+
+    return true;
   }
 
   void moveToLocation(TapUpInfo info) {
@@ -96,7 +110,8 @@ class George extends Character {
   void update(double dt) async {
     super.update(dt);
 
-    speed = hud.runButton.buttonPressed ? runningSpeed : walkingSpeed;
+    speed = (hud.runButton.buttonPressed || keyRunningPressed) ? runningSpeed : walkingSpeed;
+    final bool isMovingByKeys = keyLeftPressed || keyRightPressed || keyUpPressed || keyDownPressed;
 
     if (!hud.joystick.delta.isZero()) {
       movePlayer(dt);
@@ -132,6 +147,37 @@ class George extends Character {
         case JoystickDirection.idle:
           animation = null;
         break;
+      }
+    } else if (isMovingByKeys) {
+      movePlayer(dt);
+      playing = true;
+      movingToTouchedLocation = false;
+
+      if (!isMoving) {
+        isMoving = true;
+        audioPlayerRunning = await FlameAudio.loopLongAudio('sounds/running.wav', volume: 1.0);
+      }
+      
+      if (keyUpPressed && (keyLeftPressed || keyRightPressed)) {
+        animation = upAnimation;
+        currentDirection = Character.up;
+      } else if (keyDownPressed && (keyLeftPressed || keyRightPressed)) {
+        animation = downAnimation;
+        currentDirection = Character.down;
+      } else if (keyLeftPressed) {
+        animation = leftAnimation;
+        currentDirection = Character.left;
+      } else if (keyRightPressed) {
+        animation = rightAnimation;
+        currentDirection = Character.right;
+      } else if (keyUpPressed) {
+        animation = upAnimation;
+        currentDirection = Character.up;
+      } else if (keyDownPressed) {
+        animation = downAnimation;
+        currentDirection = Character.down;
+      } else {
+        animation = null;
       }
     } else {
       if (movingToTouchedLocation) {
@@ -210,6 +256,11 @@ class George extends Character {
   void stopAnimations() {
     animation?.currentIndex = 0;
     playing = false;
+
+    keyLeftPressed = false;
+    keyRightPressed = false;
+    keyUpPressed = false;
+    keyDownPressed = false;
   }
 
   void onPaused() {

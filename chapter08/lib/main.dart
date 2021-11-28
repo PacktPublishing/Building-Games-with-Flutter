@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
+import 'package:flame/input.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
@@ -28,7 +29,7 @@ void main() async {
   );
 }
 
-class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasTappableComponents {
+class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasTappableComponents, HasKeyboardHandlerComponents {
 
   @override
   Future<void> onLoad() async {
