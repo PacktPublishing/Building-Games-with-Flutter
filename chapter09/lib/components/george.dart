@@ -13,8 +13,11 @@ import 'package:flame/input.dart';
 import 'character.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:goldrush/utils/effects.dart';
+import 'package:goldrush/main.dart';
+import 'package:flutter/material.dart';
 
-class George extends Character with KeyboardHandler {
+class George extends Character with KeyboardHandler, HasGameRef<MyGame> {
 
   George({required this.hud, required Vector2 position, required Vector2 size, required double speed}) : super(position: position, size: size, speed: speed) {
     originalPosition = position;
@@ -76,6 +79,7 @@ class George extends Character with KeyboardHandler {
     super.onCollision(points, other);
 
     if (other is Zombie || other is Skeleton) {
+      gameRef.add(ParticleComponent(explodingParticle(other.position, Colors.red)));
       other.removeFromParent();
       hud.scoreText.setScore(10);
 
@@ -83,6 +87,7 @@ class George extends Character with KeyboardHandler {
     }
 
     if (other is Coin) {
+      gameRef.add(ParticleComponent(explodingParticle(other.position, Colors.yellow)));
       other.removeFromParent();
       hud.scoreText.setScore(20);
 
