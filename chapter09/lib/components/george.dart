@@ -57,7 +57,6 @@ class George extends Character with KeyboardHandler, HasGameRef<MyGame> {
     await FlameAudio.audioCache.loadAll(['sounds/enemy_dies.wav', 'sounds/running.wav', 'sounds/coin.wav']);
   }
 
-
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     if (event.data.keyLabel.toLowerCase().contains('a')) { keyLeftPressed = (event is RawKeyDownEvent); }

@@ -2,6 +2,7 @@ import 'package:flame/game.dart';
 import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:flame/layers.dart';
   
 Particle explodingParticle(Vector2 origin, MaterialColor color) {
   double distanceToMove = 15.0;
@@ -21,4 +22,17 @@ Particle explodingParticle(Vector2 origin, MaterialColor color) {
       }).moving(from: origin, to: destination);
     }
   );
+}
+
+class ShadowLayer extends DynamicLayer {
+  final Function renderFunction;
+
+  ShadowLayer(this.renderFunction) {
+    preProcessors.add(ShadowProcessor(color: Colors.black, offset: const Offset(4, 4)));
+  }
+
+  @override
+  void drawLayer() {
+    renderFunction(canvas);
+  }
 }

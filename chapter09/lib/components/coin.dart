@@ -4,6 +4,7 @@ import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'dart:ui';
 import 'package:goldrush/utils/math_utils.dart';
+import 'package:goldrush/utils/effects.dart';
 
 class Coin extends SpriteAnimationComponent with Hitbox, Collidable {
 
@@ -12,6 +13,7 @@ class Coin extends SpriteAnimationComponent with Hitbox, Collidable {
     super(position: position, size: size);
 
   late Vector2 originalPosition;
+  late ShadowLayer shadowLayer;
 
   @override
   Future<void> onLoad() async {
@@ -24,6 +26,8 @@ class Coin extends SpriteAnimationComponent with Hitbox, Collidable {
 
     animation = spriteSheet.createAnimation(row: 0, stepTime: 0.1, from: 0, to: 7);
     addHitbox(HitboxRectangle());
+
+    shadowLayer = ShadowLayer(super.render);
   }
 
   @override
@@ -33,4 +37,12 @@ class Coin extends SpriteAnimationComponent with Hitbox, Collidable {
     Rect gameScreenBounds = getGameScreenBounds(canvasSize);
     position = Vector2(originalPosition.x + gameScreenBounds.left, originalPosition.y + gameScreenBounds.top);
   }
+
+  @override
+  void render(Canvas canvas) {
+    shadowLayer.render(canvas);
+  }
 }
+
+
+
