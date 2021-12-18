@@ -1,6 +1,4 @@
-
 import 'dart:ui';
-
 import 'package:flame/flame.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +6,7 @@ import 'package:flame/game.dart';
 
 void main() async {
   // Create an instance of the game
-  final myGame = MyGame();
+  final goldRush = GoldRush();
   
   // Setup Flutter widgets and start the game in full screen portrait orientation
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,11 +15,11 @@ void main() async {
   
   // Every is a widget in Flutter! So run the app passing the games widget here
   runApp(
-    GameWidget(game: myGame)
+    GameWidget(game: goldRush)
   );
 }
 
-class MyGame extends Game {
+class GoldRush extends FlameGame {
 
   static const int squareSpeed = 250; // The speed that our square will animate
   static final squarePaint = BasicPalette.green.paint(); // The color of the square
@@ -36,6 +34,8 @@ class MyGame extends Game {
   // Override this function to initialise game state and load game resources
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+
     // Get the width and height of our screen canvas
     screenWidth = MediaQueryData.fromWindow(window).size.width;
     screenHeight = MediaQueryData.fromWindow(window).size.height;
@@ -51,12 +51,16 @@ class MyGame extends Game {
   // Override this function to control what is drawn on the screen
   @override
   void render(Canvas canvas) {
+    super.render(canvas);
+
     canvas.drawRect(squarePos, squarePaint); // Draw the green square on the canvas
   }
 
   // Override this function to update the game state since the time elapsed since the last update
   @override
   void update(double deltaTime) {
+    super.update(deltaTime);
+
     // Update the x position of the square based on the speed and direction and the time elapsed
     squarePos = squarePos.translate(squareSpeed * squareDirection * deltaTime, 0);
 
