@@ -1,11 +1,10 @@
 import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/palette.dart';
 
-class Player extends SpriteComponent with Hitbox, Collidable {
+class Player extends PositionComponent with HasHitboxes, Collidable {
 
   static const int squareSpeed = 250; // The speed that our square will animate
   static final squarePaint = BasicPalette.green.paint(); // The color of the square
@@ -17,6 +16,8 @@ class Player extends SpriteComponent with Hitbox, Collidable {
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+
     // Get the width and height of our screen canvas
     screenWidth = MediaQueryData.fromWindow(window).size.width;
     screenHeight = MediaQueryData.fromWindow(window).size.height;
@@ -29,7 +30,7 @@ class Player extends SpriteComponent with Hitbox, Collidable {
     position = Vector2(centerX, centerY);
     size = Vector2(squareWidth, squareHeight);
 
-    addShape(HitboxRectangle());
+    addHitbox(HitboxRectangle());
   }
 
   @override
@@ -55,6 +56,6 @@ class Player extends SpriteComponent with Hitbox, Collidable {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    renderShapes(canvas, paint: squarePaint);
+    renderHitboxes(canvas, paint: squarePaint);
   }
 }
