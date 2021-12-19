@@ -19,7 +19,7 @@ void main() async {
   );
 }
 
-class GoldRush extends FlameGame {
+class GoldRush with Loadable, Game {
 
   static const int squareSpeed = 250; // The speed that our square will animate
   static final squarePaint = BasicPalette.green.paint(); // The color of the square
@@ -51,15 +51,12 @@ class GoldRush extends FlameGame {
   // Override this function to control what is drawn on the screen
   @override
   void render(Canvas canvas) {
-    super.render(canvas);
-
     canvas.drawRect(squarePos, squarePaint); // Draw the green square on the canvas
   }
 
   // Override this function to update the game state since the time elapsed since the last update
   @override
   void update(double deltaTime) {
-    super.update(deltaTime);
 
     // Update the x position of the square based on the speed and direction and the time elapsed
     squarePos = squarePos.translate(squareSpeed * squareDirection * deltaTime, 0);
