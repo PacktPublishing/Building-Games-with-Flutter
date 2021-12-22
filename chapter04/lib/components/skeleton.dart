@@ -2,13 +2,15 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
-import 'character.dart';
+import 'package:goldrush/components/character.dart';
 
 class Skeleton extends Character {
   Skeleton({required Vector2 position, required Vector2 size, required double speed}) : super(position: position, size: size, speed: speed);
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+    
     var spriteImages = await Flame.images.load('zombie_n_skeleton.png');
     final spriteSheet = SpriteSheet(image: spriteImages, srcSize: size);
 
@@ -19,6 +21,6 @@ class Skeleton extends Character {
 
     changeDirection();
     
-    addShape(HitboxRectangle());
+    addHitbox(HitboxRectangle());
   }
 }
