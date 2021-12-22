@@ -19,6 +19,8 @@ class George extends Character {
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+    
     walkingSpeed = speed;
     runningSpeed = speed * 2;
 
@@ -94,9 +96,9 @@ class George extends Character {
       if (movingToTouchedLocation) {
         position += (targetLocation - position).normalized() * (speed * dt);
 
-        double threshhold = 1.0;
+        double threshold = 1.0;
         var difference = targetLocation - position;
-        if (difference.x.abs() < threshhold && difference.y.abs() < threshhold) {
+        if (difference.x.abs() < threshold && difference.y.abs() < threshold) {
           stopAnimations();
           movingToTouchedLocation = false;
           return;
