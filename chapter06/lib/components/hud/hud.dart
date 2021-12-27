@@ -40,5 +40,7 @@ class HudComponent extends PositionComponent {
     add(joystick);
     add(runButton);
     add(scoreText);
+
+    positionType = PositionType.viewport;
   }
 }
