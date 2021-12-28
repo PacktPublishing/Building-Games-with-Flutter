@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'george.dart';
 
-class Background extends SpriteComponent with Tappable {
+class Background extends PositionComponent with Tappable {
 
   Background(this.george);
 

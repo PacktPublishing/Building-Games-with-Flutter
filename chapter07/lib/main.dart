@@ -4,32 +4,29 @@ import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:goldrush/components/character.dart';
+import 'package:goldrush/components/coin.dart';
 import 'package:goldrush/components/hud/hud.dart';
 import 'package:goldrush/components/water.dart';
 import 'package:goldrush/components/zombie.dart';
 import 'package:goldrush/components/skeleton.dart';
 import 'components/background.dart';
-import 'components/coin.dart';
 import 'components/george.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'dart:math';
 
 void main() async {
-  // Create an instance of the game
-  final myGame = MyGame();
+  final goldRush = GoldRush();
 
-  // Setup Flutter widgets and start the game in full screen portrait orientation
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.fullScreen();
   await Flame.device.setLandscape();
   
-  // Run the app, passing the games widget here
   runApp(
-    GameWidget(game: myGame)
+    GameWidget(game: goldRush)
   );
 }
 
-class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasTappableComponents {
+class GoldRush extends FlameGame with HasCollidables, HasDraggables, HasTappables {
 
   @override
   Future<void> onLoad() async {

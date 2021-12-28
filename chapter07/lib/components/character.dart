@@ -1,8 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 
-// Base class for all our sprites
-class Character extends SpriteAnimationComponent with Hitbox, Collidable {
+class Character extends SpriteAnimationComponent with HasHitboxes, Collidable {
 
   Character({required Vector2 position, required Vector2 size, required double speed}) {
       this.position = position;
