@@ -4,7 +4,7 @@ import 'george.dart';
 import 'package:goldrush/utils/math_utils.dart';
 import 'dart:ui';
 
-class Background extends SpriteComponent with Tappable {
+class Background extends PositionComponent with Tappable {
 
   Background(this.george) : super(priority: 20);
 

@@ -3,7 +3,7 @@ import 'package:flame/geometry.dart';
 import 'package:goldrush/utils/math_utils.dart';
 import 'dart:ui';
 
-class Water extends PositionComponent with Hitbox, Collidable {
+class Water extends PositionComponent with HasHitboxes, Collidable {
   
   Water({required Vector2 position, required Vector2 size, required this.id}) :
     originalPosition = position,

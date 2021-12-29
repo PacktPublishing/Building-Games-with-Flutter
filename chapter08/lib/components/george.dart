@@ -8,9 +8,9 @@ import 'package:goldrush/components/skeleton.dart';
 import 'package:goldrush/components/water.dart';
 import 'package:goldrush/components/zombie.dart';
 import 'package:goldrush/components/coin.dart';
+import 'package:goldrush/components/character.dart';
 import 'package:goldrush/utils/math_utils.dart';
 import 'package:flame/input.dart';
-import 'character.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:audioplayers/audioplayers.dart';
 

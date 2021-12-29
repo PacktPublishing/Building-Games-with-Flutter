@@ -1,35 +1,35 @@
-import 'package:flame/components.dart';
-import 'package:flame/flame.dart';
-import 'package:flame/input.dart';
-import 'package:flame_tiled/flame_tiled.dart';
-import 'package:flutter/material.dart';
-import 'package:flame/game.dart';
+import 'package:goldrush/components/background.dart';
 import 'package:goldrush/components/character.dart';
+import 'package:goldrush/components/coin.dart';
+import 'package:goldrush/components/george.dart';
 import 'package:goldrush/components/hud/hud.dart';
 import 'package:goldrush/components/water.dart';
 import 'package:goldrush/components/zombie.dart';
 import 'package:goldrush/components/skeleton.dart';
-import 'components/background.dart';
-import 'components/coin.dart';
-import 'components/george.dart';
-import 'package:flame_audio/flame_audio.dart';
-import 'dart:math';
 import 'package:goldrush/components/tilemap.dart';
 import 'package:goldrush/utils/math_utils.dart';
+import 'package:flame_tiled/flame_tiled.dart';
+import 'package:flame_audio/flame_audio.dart';
+import 'package:flame/components.dart';
+import 'package:flame/flame.dart';
+import 'package:flame/input.dart';
+import 'package:flutter/material.dart';
+import 'package:flame/game.dart';
+import 'dart:math';
 
 void main() async {
-  final myGame = MyGame();
+  final goldRush = GoldRush();
 
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.fullScreen();
   await Flame.device.setLandscape();
   
   runApp(
-    GameWidget(game: myGame)
+    GameWidget(game: goldRush)
   );
 }
 
-class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasTappableComponents, HasKeyboardHandlerComponents {
+class GoldRush extends FlameGame with HasCollidables, HasDraggables, HasTappables, HasKeyboardHandlerComponents {
 
   @override
   Future<void> onLoad() async {
@@ -44,7 +44,8 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
     var hud = HudComponent();
     var george = George(hud: hud, position: Vector2(gameScreenBounds.left + 300, gameScreenBounds.top + 300), size: Vector2(48.0, 48.0), speed: 40.0);
     add (george);
-    changePriority(george, 15);
+  
+    children.changePriority(george, 15);
 
     add(Background(george));
 
@@ -58,7 +59,7 @@ class MyGame extends FlameGame with HasCollidables, HasDraggableComponents, HasT
       if (index % 2 == 0) {
         add(Skeleton(position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 60.0));
       } else {
-        add (Zombie(position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 20.0));
+        add(Zombie(position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 20.0));
       }
     });
 
