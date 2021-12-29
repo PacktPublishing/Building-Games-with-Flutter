@@ -17,7 +17,7 @@ import 'package:goldrush/utils/effects.dart';
 import 'package:goldrush/main.dart';
 import 'package:flutter/material.dart';
 
-class George extends Character with KeyboardHandler, HasGameRef<MyGame> {
+class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
 
   George({required this.hud, required Vector2 position, required Vector2 size, required double speed}) : super(position: position, size: size, speed: speed) {
     originalPosition = position;

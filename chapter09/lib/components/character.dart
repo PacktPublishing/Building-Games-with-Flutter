@@ -4,7 +4,7 @@ import 'package:goldrush/utils/math_utils.dart';
 import 'package:flame/extensions.dart';
 import 'package:goldrush/utils/effects.dart';
 
-class Character extends SpriteAnimationComponent with Hitbox, Collidable {
+class Character extends SpriteAnimationComponent with HasHitboxes, Collidable {
 
   Character({required Vector2 position, required Vector2 size, required double speed}) {
       this.position = position;

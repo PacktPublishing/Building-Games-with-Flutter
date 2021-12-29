@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:goldrush/utils/math_utils.dart';
 import 'package:goldrush/utils/effects.dart';
 
-class Coin extends SpriteAnimationComponent with Hitbox, Collidable {
+class Coin extends SpriteAnimationComponent with HasHitboxes, Collidable {
 
   Coin({required Vector2 position, required Vector2 size}) :
     originalPosition = position,
