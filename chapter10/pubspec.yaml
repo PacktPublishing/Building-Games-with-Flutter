@@ -31,6 +31,7 @@ dependencies:
   flame: ^1.0.0
   flame_tiled: ^1.0.0
   flame_audio: ^1.0.0
+  a_star_algorithm: ^0.1.1
 
 dev_dependencies:
   flutter_test:

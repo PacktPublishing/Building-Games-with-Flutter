@@ -9,7 +9,7 @@
  <objectgroup id="2" name="Enemies" visible="0">
   <object id="7" gid="47" x="975.778" y="284" width="32" height="32"/>
   <object id="8" gid="47" x="904.593" y="1418.15" width="32" height="32"/>
-  <object id="9" gid="47" x="256.296" y="227.037" width="32" height="32"/>
+  <object id="9" gid="47" x="576" y="640" width="32" height="32"/>
   <object id="11" gid="47" x="622.741" y="1362.3" width="32" height="32"/>
   <object id="12" gid="47" x="217.333" y="599.333" width="32" height="32"/>
   <object id="13" gid="47" x="492.593" y="1068.44" width="32" height="32"/>
@@ -18,7 +18,7 @@
   <object id="16" gid="47" x="1019.85" y="1032.67" width="32" height="32"/>
   <object id="17" gid="47" x="1339.48" y="266.667" width="32" height="32"/>
   <object id="18" gid="47" x="1227.56" y="1306.22" width="32" height="32"/>
-  <object id="19" gid="47" x="489.704" y="429.037" width="32" height="32"/>
+  <object id="19" gid="47" x="672" y="256" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="3" name="Water" visible="0">
   <object id="43" x="32" y="0" width="1536" height="32"/>

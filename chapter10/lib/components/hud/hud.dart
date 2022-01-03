@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+import 'package:goldrush/components/hud/health_text.dart';
 import 'package:goldrush/components/hud/run_button.dart';
 import 'package:goldrush/components/hud/score_text.dart';
 import 'package:goldrush/components/hud/joystick.dart';
@@ -13,6 +14,7 @@ class HudComponent extends PositionComponent {
   late Joystick joystick;
   late RunButton runButton;
   late ScoreText scoreText;
+  late HealthText healthText;
   bool isInitialised = false;
 
   @override
@@ -41,10 +43,12 @@ class HudComponent extends PositionComponent {
       );
 
       scoreText = ScoreText(position: Vector2(gameScreenBounds.left + 80, gameScreenBounds.top + 60));
+      healthText = HealthText(position: Vector2(gameScreenBounds.right - 80, gameScreenBounds.top + 60));
 
       add(joystick);
       add(runButton);
       add(scoreText);
+      add(healthText);
 
       positionType = PositionType.viewport;
 
@@ -53,6 +57,7 @@ class HudComponent extends PositionComponent {
       joystick.position = Vector2(gameScreenBounds.left + 80, gameScreenBounds.bottom - 80);
       runButton.position = Vector2(gameScreenBounds.right - 80, gameScreenBounds.bottom - 80);
       scoreText.position = Vector2(gameScreenBounds.left + 80, gameScreenBounds.top + 60);
+      healthText.position = Vector2(gameScreenBounds.right - 80, gameScreenBounds.top + 60);
     }
   }
 }

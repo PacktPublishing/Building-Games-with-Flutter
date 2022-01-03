@@ -54,11 +54,10 @@ class GoldRush extends FlameGame with HasCollidables, HasDraggables, HasTappable
 
     final enemies = tiledMap.tileMap.getObjectGroupFromLayer('Enemies');
     enemies.objects.asMap().forEach((index, position) {
-
       if (index % 2 == 0) {
-        add(Skeleton(position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 60.0));
+        add(Skeleton(player: george, position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 20.0));
       } else {
-        add (Zombie(position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 20.0));
+        add (Zombie(player: george, position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 20.0));
       }
     });
 

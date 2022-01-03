@@ -2,11 +2,12 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
+import 'package:goldrush/components/character.dart';
 import 'character_enemy.dart';
 
 class Skeleton extends EnemyCharacter {
 
-  Skeleton({required Vector2 position, required Vector2 size, required double speed}) : super(position: position, size: size, speed: speed) {
+  Skeleton({required Character player, required Vector2 position, required Vector2 size, required double speed}) : super(player: player, position: position, size: size, speed: speed) {
     originalPosition = position;
   }
   

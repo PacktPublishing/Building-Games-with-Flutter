@@ -32,6 +32,7 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
   int collisionDirection = Character.down;
   bool hasCollided = false;
   bool keyLeftPressed = false, keyRightPressed = false, keyUpPressed = false, keyDownPressed = false, keyRunningPressed = false;
+  int health = 100;
 
   @override
   Future<void> onLoad() async {
@@ -80,7 +81,12 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
     if (other is Zombie || other is Skeleton) {
       gameRef.add(ParticleComponent(explodingParticle(other.position, Colors.red)));
       other.removeFromParent();
-      hud.scoreText.setScore(10);
+      if (health > 0) {
+        health -= 25;
+        hud.healthText.setHealth(health);
+      } else {
+        // TODO: Show game over screen here
+      }
 
       FlameAudio.play('sounds/enemy_dies.wav', volume: 1.0);
     }
