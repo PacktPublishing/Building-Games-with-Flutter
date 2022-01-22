@@ -1,8 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
-import 'george.dart';
+import 'package:flutter/material.dart';
+import 'package:goldrush/components/george.dart';
 import 'package:goldrush/utils/math_utils.dart';
-import 'dart:ui';
 
 class Background extends PositionComponent with Tappable {
 

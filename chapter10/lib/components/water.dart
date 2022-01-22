@@ -30,7 +30,3 @@ class Water extends PositionComponent with HasHitboxes, Collidable {
     position = Vector2(originalPosition.x + gameScreenBounds.left, originalPosition.y + gameScreenBounds.top);
   }
 }
-
-class Object extends SpriteAnimationComponent {
-  
-}

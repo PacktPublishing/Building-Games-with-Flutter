@@ -39,6 +39,7 @@ class Coin extends SpriteAnimationComponent with HasHitboxes, Collidable {
   }
 
   @override
+  // ignore: must_call_super
   void render(Canvas canvas) {
     shadowLayer.render(canvas);
   }

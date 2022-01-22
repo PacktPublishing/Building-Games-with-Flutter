@@ -1,3 +1,4 @@
+import 'package:a_star_algorithm/a_star_algorithm.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
@@ -8,18 +9,19 @@ import 'package:goldrush/components/skeleton.dart';
 import 'package:goldrush/components/water.dart';
 import 'package:goldrush/components/zombie.dart';
 import 'package:goldrush/components/coin.dart';
+import 'package:goldrush/main.dart';
+import 'package:goldrush/utils/map_utils.dart';
 import 'package:goldrush/utils/math_utils.dart';
 import 'package:flame/input.dart';
 import 'character.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:goldrush/utils/effects.dart';
-import 'package:goldrush/main.dart';
 import 'package:flutter/material.dart';
 
 class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
 
-  George({required this.hud, required Vector2 position, required Vector2 size, required double speed}) : super(position: position, size: size, speed: speed) {
+  George({required this.barrierOffsets, required this.hud, required Vector2 position, required Vector2 size, required double speed}) : super(position: position, size: size, speed: speed) {
     originalPosition = position;
   }
 
@@ -33,6 +35,9 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
   bool hasCollided = false;
   bool keyLeftPressed = false, keyRightPressed = false, keyUpPressed = false, keyDownPressed = false, keyRunningPressed = false;
   int health = 100;
+  List<Offset> barrierOffsets;
+  List<Offset> pathToTargetLocation = [];
+  int currentPathStep = -1;
 
   @override
   Future<void> onLoad() async {
@@ -70,7 +75,23 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
   }
 
   void moveToLocation(TapUpInfo info) {
+    pathToTargetLocation = AStar(
+      rows: 50,
+      columns: 50,
+      start: worldToGridOffset(position),
+      end: worldToGridOffset(info.eventPosition.game),
+      withDiagonal: true,
+      barriers: barrierOffsets
+    ).findThePath().toList();
+
     targetLocation = info.eventPosition.game;
+    faceCorrectDirection();
+
+    // As pathToTargetLocation[0] is the same as the current position, we set the currentPathStep to the next step, 1
+    currentPathStep = 1; 
+    targetLocation = gridOffsetToWorld(pathToTargetLocation[currentPathStep]);
+    targetLocation.add(Vector2(16, 16));
+    
     movingToTouchedLocation = true;
   }
 
@@ -124,110 +145,12 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
     final bool isMovingByKeys = keyLeftPressed || keyRightPressed || keyUpPressed || keyDownPressed;
 
     if (!hud.joystick.delta.isZero()) {
-      movePlayer(dt);
-      playing = true;
-      movingToTouchedLocation = false;
-
-      if (!isMoving) {
-        isMoving = true;
-        audioPlayerRunning = await FlameAudio.loopLongAudio('sounds/running.wav', volume: 1.0);
-      }
-      
-      switch (hud.joystick.direction) {
-        case JoystickDirection.up:
-        case JoystickDirection.upRight:
-        case JoystickDirection.upLeft:
-          animation = upAnimation;
-          currentDirection = Character.up;
-        break;
-        case JoystickDirection.down:
-        case JoystickDirection.downRight:
-        case JoystickDirection.downLeft:
-          animation = downAnimation;
-          currentDirection = Character.down;
-        break;
-        case JoystickDirection.left:
-          animation = leftAnimation;
-          currentDirection = Character.left;
-        break;
-        case JoystickDirection.right:
-          animation = rightAnimation;
-          currentDirection = Character.right;
-        break;
-        case JoystickDirection.idle:
-          animation = null;
-        break;
-      }
+      moveByJoystick(dt);
     } else if (isMovingByKeys) {
-      movePlayer(dt);
-      playing = true;
-      movingToTouchedLocation = false;
-
-      if (!isMoving) {
-        isMoving = true;
-        audioPlayerRunning = await FlameAudio.loopLongAudio('sounds/running.wav', volume: 1.0);
-      }
-      
-      if (keyUpPressed && (keyLeftPressed || keyRightPressed)) {
-        animation = upAnimation;
-        currentDirection = Character.up;
-      } else if (keyDownPressed && (keyLeftPressed || keyRightPressed)) {
-        animation = downAnimation;
-        currentDirection = Character.down;
-      } else if (keyLeftPressed) {
-        animation = leftAnimation;
-        currentDirection = Character.left;
-      } else if (keyRightPressed) {
-        animation = rightAnimation;
-        currentDirection = Character.right;
-      } else if (keyUpPressed) {
-        animation = upAnimation;
-        currentDirection = Character.up;
-      } else if (keyDownPressed) {
-        animation = downAnimation;
-        currentDirection = Character.down;
-      } else {
-        animation = null;
-      }
+        moveByKeyboard(dt);
     } else {
       if (movingToTouchedLocation) {
-        if (!isMoving) {
-          isMoving = true;
-          audioPlayerRunning = await FlameAudio.loopLongAudio('sounds/running.wav', volume: 1.0);
-        }
-
-        movePlayer(dt);
-        double threshhold = 1.0;
-        var difference = targetLocation - position;
-        if (difference.x.abs() < threshhold && difference.y.abs() < threshhold) {
-          stopAnimations();
-
-          audioPlayerRunning.stop();          
-          isMoving = false;
-
-          movingToTouchedLocation = false;
-          return;
-        }
-
-        playing = true;
-
-        var angle = getAngle(position, targetLocation);
-        if ((angle > 315 && angle < 360) || (angle > 0 && angle < 45) ) { // Moving right
-          animation = rightAnimation;
-          currentDirection = Character.right;
-        } 
-        else if (angle > 45 && angle < 135) { // Moving down
-          animation = downAnimation;
-          currentDirection = Character.down;
-        } 
-        else if (angle > 135 && angle < 225) { // Moving left
-          animation = leftAnimation;
-          currentDirection = Character.left;
-        } 
-        else if (angle > 225 && angle < 315) { // Moving up 
-          animation = upAnimation;
-          currentDirection = Character.up;
-        }
+        moveByTouch(dt);
       } else {
         if (playing) {
           stopAnimations();
@@ -240,6 +163,126 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
     }
   }
 
+  void moveByJoystick(double dt) async {
+    movePlayer(dt);
+    playing = true;
+    movingToTouchedLocation = false;
+
+    if (!isMoving) {
+      isMoving = true;
+      audioPlayerRunning = await FlameAudio.loopLongAudio('sounds/running.wav', volume: 1.0);
+    }
+    
+    switch (hud.joystick.direction) {
+      case JoystickDirection.up:
+      case JoystickDirection.upRight:
+      case JoystickDirection.upLeft:
+        animation = upAnimation;
+        currentDirection = Character.up;
+      break;
+      case JoystickDirection.down:
+      case JoystickDirection.downRight:
+      case JoystickDirection.downLeft:
+        animation = downAnimation;
+        currentDirection = Character.down;
+      break;
+      case JoystickDirection.left:
+        animation = leftAnimation;
+        currentDirection = Character.left;
+      break;
+      case JoystickDirection.right:
+        animation = rightAnimation;
+        currentDirection = Character.right;
+      break;
+      case JoystickDirection.idle:
+        animation = null;
+      break;
+    }
+  }
+
+  void moveByKeyboard(double dt) async {
+    movePlayer(dt);
+    playing = true;
+    movingToTouchedLocation = false;
+
+    if (!isMoving) {
+      isMoving = true;
+      audioPlayerRunning = await FlameAudio.loopLongAudio('sounds/running.wav', volume: 1.0);
+    }
+
+    if (keyUpPressed && (keyLeftPressed || keyRightPressed)) {
+      animation = upAnimation;
+      currentDirection = Character.up;
+    } else if (keyDownPressed && (keyLeftPressed || keyRightPressed)) {
+      animation = downAnimation;
+      currentDirection = Character.down;
+    } else if (keyLeftPressed) {
+      animation = leftAnimation;
+      currentDirection = Character.left;
+    } else if (keyRightPressed) {
+      animation = rightAnimation;
+      currentDirection = Character.right;
+    } else if (keyUpPressed) {
+      animation = upAnimation;
+      currentDirection = Character.up;
+    } else if (keyDownPressed) {
+      animation = downAnimation;
+      currentDirection = Character.down;
+    } else {
+      animation = null;
+    }
+  }
+
+  void moveByTouch(double dt) async {
+    if (!isMoving) {
+      isMoving = true;
+      audioPlayerRunning = await FlameAudio.loopLongAudio('sounds/running.wav', volume: 1.0);
+    }
+
+    movePlayer(dt);
+    double threshold = 2.0;
+    var difference = targetLocation - position;
+    if (difference.x.abs() < threshold && difference.y.abs() < threshold) {
+      if (currentPathStep < pathToTargetLocation.length -1) {
+        currentPathStep++;
+        targetLocation = gridOffsetToWorld(pathToTargetLocation[currentPathStep]);
+        targetLocation.add(Vector2(16, 16));
+      } else {
+        stopAnimations();
+        audioPlayerRunning.stop();          
+        isMoving = false;
+
+        movingToTouchedLocation = false;
+        return;
+      }
+    }
+
+    playing = true;
+    if (currentPathStep <= pathToTargetLocation.length) {
+      faceCorrectDirection();
+    }
+  }
+
+  void faceCorrectDirection() {
+      var angle = getAngle(position, targetLocation);
+      if ((angle > 315 && angle < 360) || (angle > 0 && angle < 45) ) { // Facing right
+        animation = rightAnimation;
+        currentDirection = Character.right;
+      } 
+      else if (angle > 45 && angle < 135) { // Facing down
+        animation = downAnimation;
+        currentDirection = Character.down;
+      } 
+      else if (angle > 135 && angle < 225) { // Facing left
+        animation = leftAnimation;
+        currentDirection = Character.left;
+      } 
+      else if (angle > 225 && angle < 315) { // Facing up 
+        animation = upAnimation;
+        currentDirection = Character.up;
+      }
+  }
+  
   void movePlayer(double delta) {
     if (!(hasCollided && collisionDirection == currentDirection)) {
       if (movingToTouchedLocation) {

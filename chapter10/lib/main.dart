@@ -4,16 +4,17 @@ import 'package:flame/input.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
+import 'dart:math';
+import 'package:goldrush/components/background.dart';
 import 'package:goldrush/components/character.dart';
+import 'package:goldrush/components/coin.dart';
+import 'package:goldrush/components/george.dart';
 import 'package:goldrush/components/hud/hud.dart';
 import 'package:goldrush/components/water.dart';
 import 'package:goldrush/components/zombie.dart';
 import 'package:goldrush/components/skeleton.dart';
-import 'components/background.dart';
-import 'components/coin.dart';
-import 'components/george.dart';
+import 'package:goldrush/utils/map_utils.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'dart:math';
 import 'package:goldrush/components/tilemap.dart';
 import 'package:goldrush/utils/math_utils.dart';
 
@@ -41,15 +42,25 @@ class GoldRush extends FlameGame with HasCollidables, HasDraggables, HasTappable
     await FlameAudio.bgm.load('music/music.mp3');
     await FlameAudio.bgm.play('music/music.mp3', volume: 0.1);
 
+    final tiledMap = await TiledComponent.load('tiles.tmx', Vector2.all(32));
+    add(TileMapComponent(tiledMap));
+
+    List<Offset> barrierOffsets = [];
+    final water = tiledMap.tileMap.getObjectGroupFromLayer('Water');
+    water.objects.forEach((rect) {
+      if (rect.width == 32 && rect.height == 32) {
+        barrierOffsets.add(worldToGridOffset(Vector2(rect.x, rect.y)));
+      }
+      add(Water(position: Vector2(rect.x + gameScreenBounds.left, rect.y + gameScreenBounds.top), size: Vector2(rect.width, rect.height), id: rect.id));
+    });
+
     var hud = HudComponent();
-    var george = George(hud: hud, position: Vector2(gameScreenBounds.left + 300, gameScreenBounds.top + 300), size: Vector2(48.0, 48.0), speed: 40.0);
+    var george = George(barrierOffsets: barrierOffsets, hud: hud, position: Vector2(gameScreenBounds.left + 300, gameScreenBounds.top + 300), size: Vector2(32.0, 32.0), speed: 40.0);
     add (george);
     children.changePriority(george, 15);
 
     add(Background(george));
 
-    final tiledMap = await TiledComponent.load('tiles.tmx', Vector2.all(32));
-    add(TileMapComponent(tiledMap));
     add(hud);
 
     final enemies = tiledMap.tileMap.getObjectGroupFromLayer('Enemies');
@@ -71,10 +82,6 @@ class GoldRush extends FlameGame with HasCollidables, HasDraggables, HasTappable
       add(Coin(position: Vector2(posCoinX, posCoinY), size: Vector2(20, 20)));
     }
 
-    final water = tiledMap.tileMap.getObjectGroupFromLayer('Water');
-    water.objects.forEach((rect) {
-      add(Water(position: Vector2(rect.x + gameScreenBounds.left, rect.y + gameScreenBounds.top), size: Vector2(rect.width, rect.height), id: rect.id));
-    });
 
     camera.speed = 1;
     camera.followComponent(george, worldBounds: Rect.fromLTWH(gameScreenBounds.left, gameScreenBounds.top, 1600, 1600));
