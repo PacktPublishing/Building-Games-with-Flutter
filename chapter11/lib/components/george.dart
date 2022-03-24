@@ -102,11 +102,14 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
     if (other is Zombie || other is Skeleton) {
       gameRef.add(ParticleComponent(explodingParticle(other.position, Colors.red)));
       other.removeFromParent();
+
       if (health > 0) {
         health -= 25;
         hud.healthText.setHealth(health);
-      } else {
-        // TODO: Show game over screen here
+      } 
+      
+      if (health == 0) {
+        Navigator.pushNamedAndRemoveUntil(gameRef.buildContext!, "/gameover", (r) => false);
       }
 
       FlameAudio.play('sounds/enemy_dies.wav', volume: 1.0);
