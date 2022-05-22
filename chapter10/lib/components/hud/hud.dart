@@ -43,7 +43,7 @@ class HudComponent extends PositionComponent {
       );
 
       scoreText = ScoreText(position: Vector2(gameScreenBounds.left + 80, gameScreenBounds.top + 60));
-      healthText = HealthText(position: Vector2(gameScreenBounds.right - 80, gameScreenBounds.top + 60));
+      healthText = HealthText(position: Vector2(gameScreenBounds.right - 200, gameScreenBounds.top + 60));
 
       add(joystick);
       add(runButton);
