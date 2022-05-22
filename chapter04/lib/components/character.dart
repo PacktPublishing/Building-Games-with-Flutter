@@ -18,7 +18,7 @@ class Character extends SpriteAnimationComponent with HasHitboxes, Collidable {
   static const int down = 0, left = 1, up = 2, right = 3;
 
   void changeDirection() {
-    Random random = new Random();
+    Random random = Random();
     int newDirection = random.nextInt(4);
 
     switch (newDirection) {
