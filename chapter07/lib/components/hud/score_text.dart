@@ -17,7 +17,7 @@ class ScoreText extends HudMarginComponent {
   Future<void> onLoad() async {
     super.onLoad();
 
-    TextStyle textStyle = TextStyle(color: BasicPalette.blue.color);
+    TextStyle textStyle = TextStyle(color: BasicPalette.blue.color, fontSize: 30.0);
     _regularPaint = TextPaint(style: textStyle);
     scoreTextComponent = TextComponent(text: scoreText + score.toString(), textRenderer: _regularPaint);
 
