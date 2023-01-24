@@ -3,7 +3,7 @@
 
 # Building Games with Flutter
 
-<a href="https://www.packtpub.com/product/flutter-for-beginners-second-edition/9781800565999?utm_source=github&utm_medium=repository&utm_campaign=9781800565999"><img src="https://static.packt-cdn.com/products/9781801816984/cover/smaller" alt="Building Games with Flutter" height="256px" align="right"></a>
+<a href="https://www.packtpub.com/product/building-games-with-flutter/9781801816984?utm_source=github&utm_medium=repository&utm_campaign=9781801816984"><img src="https://static.packt-cdn.com/products/9781801816984/cover/smaller" alt="Building Games with Flutter" height="256px" align="right"></a>
 
 This is the code repository for [Building Games with Flutter](https://www.packtpub.com/product/building-games-with-flutter/9781801816984?utm_source=github&utm_medium=repository&utm_campaign=9781801816984), published by Packt.
 
