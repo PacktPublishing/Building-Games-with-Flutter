@@ -50,14 +50,12 @@ class HudComponent extends PositionComponent {
       add(scoreText);
       add(healthText);
 
-      positionType = PositionType.viewport;
-
       isInitialised = true;
     } else {
       joystick.position = Vector2(gameScreenBounds.left + 80, gameScreenBounds.bottom - 80);
       runButton.position = Vector2(gameScreenBounds.right - 80, gameScreenBounds.bottom - 80);
       scoreText.position = Vector2(gameScreenBounds.left + 80, gameScreenBounds.top + 60);
-      healthText.position = Vector2(gameScreenBounds.right - 80, gameScreenBounds.top + 60);
+      healthText.position = Vector2(gameScreenBounds.right - 200, gameScreenBounds.top + 60);
     }
   }
 }

@@ -1,10 +1,11 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:goldrush/utils/math_utils.dart';
 import 'package:flame/extensions.dart';
 import 'package:goldrush/utils/effects.dart';
 
-class Character extends SpriteAnimationComponent with HasHitboxes, Collidable {
+class Character extends SpriteAnimationComponent with CollisionCallbacks {
 
   Character({required Vector2 position, required Vector2 size, required double speed}) {
       this.position = position;

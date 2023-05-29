@@ -1,4 +1,6 @@
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
+import 'package:flame/experimental.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/input.dart';
 import 'package:flame_tiled/flame_tiled.dart';
@@ -43,13 +45,14 @@ void main() async {
   );
 }
 
-class GoldRush extends FlameGame with HasCollidables, HasDraggables, HasTappables, HasKeyboardHandlerComponents {
+class GoldRush extends FlameGame with DragCallbacks, TapCallbacks, HasKeyboardHandlerComponents {
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
 
     Rect gameScreenBounds = getGameScreenBounds(canvasSize);
+    World world = CollisionDetectionWorld();
 
     var musicVolume;
     await SharedPreferences.getInstance()
@@ -57,40 +60,37 @@ class GoldRush extends FlameGame with HasCollidables, HasDraggables, HasTappable
       .then((savedMusicVolume) => musicVolume = savedMusicVolume);
 
     FlameAudio.bgm.initialize();
-    await FlameAudio.bgm.load('music/music.mp3');
     await FlameAudio.bgm.play('music/music.mp3', volume: (musicVolume / 100));
 
     final tiledMap = await TiledComponent.load('tiles.tmx', Vector2.all(32));
-    add(TileMapComponent(tiledMap));
+    world.add(TileMapComponent(tiledMap));
 
     List<Offset> barrierOffsets = [];
-    final water = tiledMap.tileMap.getObjectGroupFromLayer('Water');
+    final water = tiledMap.tileMap.getLayer<ObjectGroup>('Water')!;
     water.objects.forEach((rect) {
       if (rect.width == 32 && rect.height == 32) {
         barrierOffsets.add(worldToGridOffset(Vector2(rect.x, rect.y)));
       }
-      add(Water(position: Vector2(rect.x + gameScreenBounds.left, rect.y + gameScreenBounds.top), size: Vector2(rect.width, rect.height), id: rect.id));
+      world.add(Water(position: Vector2(rect.x + gameScreenBounds.left, rect.y + gameScreenBounds.top), size: Vector2(rect.width, rect.height), id: rect.id));
     });
 
     var hud = HudComponent();
     var george = George(barrierOffsets: barrierOffsets, hud: hud, position: Vector2(gameScreenBounds.left + 300, gameScreenBounds.top + 300), size: Vector2(32.0, 32.0), speed: 40.0);
-    add (george);
-    children.changePriority(george, 15);
+    world.add(george);
+    george.priority = 15;
 
-    add(Background(george));
+    world.add(Background(george));
 
-    add(hud);
-
-    final enemies = tiledMap.tileMap.getObjectGroupFromLayer('Enemies');
+    final enemies = tiledMap.tileMap.getLayer<ObjectGroup>('Enemies')!;
     enemies.objects.asMap().forEach((index, position) {
       if (index % 2 == 0) {
         var skeleton = Skeleton(player: george, position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 20.0);
-        children.changePriority(skeleton, 15);
-        add(skeleton);
+        skeleton.priority = 15;
+        world.add(skeleton);
       } else {
         var zombie = Zombie(player: george, position: Vector2(position.x + gameScreenBounds.left, position.y + gameScreenBounds.top), size: Vector2(32.0, 64.0), speed: 20.0);
-        children.changePriority(zombie, 15);
-        add(zombie);
+        zombie.priority = 15;
+        world.add(zombie);
       }
     });
 
@@ -102,18 +102,24 @@ class GoldRush extends FlameGame with HasCollidables, HasDraggables, HasTappable
       double posCoinY = (randomY * 32) + 5 + gameScreenBounds.top;
 
       var coin = Coin(position: Vector2(posCoinX, posCoinY), size: Vector2(20, 20));
-      children.changePriority(coin, 15);
-      add(coin);
+      coin.priority = 15;
+      world.add(coin);
     }
 
-    camera.speed = 1;
-    camera.followComponent(george, worldBounds: Rect.fromLTWH(gameScreenBounds.left, gameScreenBounds.top, 1600, 1600));
+    final camera = CameraComponent(world: world);
+    camera.follow(george);
+    Rectangle rect = Rectangle.fromLTRB(
+        size.x / 2, size.y / 2, 1600 - size.x / 2, 1600 - size.y / 2);
+    camera.setBounds(rect);
+    camera.viewport.add(hud);
+    add(camera);
+
+    add(world);
   }
   
   @override
   void onRemove() {
     FlameAudio.bgm.stop();
-    FlameAudio.bgm.clearAll();
 
     super.onRemove();
   }
@@ -141,3 +147,5 @@ class GoldRush extends FlameGame with HasCollidables, HasDraggables, HasTappable
     }
   }
 }
+
+class CollisionDetectionWorld extends World with HasCollisionDetection {}

@@ -1,7 +1,8 @@
 import 'package:a_star_algorithm/a_star_algorithm.dart';
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
-import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/services.dart';
 import 'package:goldrush/components/hud/hud.dart';
@@ -12,10 +13,8 @@ import 'package:goldrush/components/coin.dart';
 import 'package:goldrush/main.dart';
 import 'package:goldrush/utils/map_utils.dart';
 import 'package:goldrush/utils/math_utils.dart';
-import 'package:flame/input.dart';
 import 'character.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:goldrush/utils/effects.dart';
 import 'package:flutter/material.dart';
 
@@ -58,7 +57,7 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
     playing = false;
     anchor = Anchor.center;
 
-    addHitbox(HitboxRectangle(relation: Vector2(0.7, 0.7))..relativeOffset = Vector2(0.0, 0.1));
+    add(RectangleHitbox.relative(Vector2(0.7, 0.7), parentSize: size, position: Vector2(0.0, 0.1)));
 
     await FlameAudio.audioCache.loadAll(['sounds/enemy_dies.wav', 'sounds/running.wav', 'sounds/coin.wav']);
   }
@@ -74,17 +73,17 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
     return true;
   }
 
-  void moveToLocation(TapUpInfo info) {
+  void moveToLocation(TapUpEvent event) {
     pathToTargetLocation = AStar(
       rows: 50,
       columns: 50,
       start: worldToGridOffset(position),
-      end: worldToGridOffset(info.eventPosition.game),
+      end: worldToGridOffset(event.localPosition),
       withDiagonal: true,
       barriers: barrierOffsets
     ).findThePath().toList();
 
-    targetLocation = info.eventPosition.game;
+    targetLocation = event.localPosition;
     faceCorrectDirection();
 
     // As pathToTargetLocation[0] is the same as the current position, we set the currentPathStep to the next step, 1
@@ -96,11 +95,11 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
   }
 
   @override
-  void onCollision(Set<Vector2> points, Collidable other) {
+  void onCollision(Set<Vector2> points, PositionComponent other) {
     super.onCollision(points, other);
 
     if (other is Zombie || other is Skeleton) {
-      gameRef.add(ParticleComponent(explodingParticle(other.position, Colors.red)));
+      gameRef.add(ParticleSystemComponent(particle: explodingParticle(other.position, Colors.red)));
       other.removeFromParent();
 
       if (health > 0) {
@@ -116,7 +115,7 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
     }
 
     if (other is Coin) {
-      gameRef.add(ParticleComponent(explodingParticle(other.position, Colors.yellow)));
+      gameRef.add(ParticleSystemComponent(particle: explodingParticle(other.position, Colors.yellow)));
       other.removeFromParent();
       hud.scoreText.setScore(20);
 
@@ -136,7 +135,8 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
   }
 
   @override
-  void onCollisionEnd(Collidable other) {
+  void onCollisionEnd(PositionComponent other) {
+    super.onCollisionEnd(other);
     hasCollided = false;
   }
 
@@ -310,7 +310,6 @@ class George extends Character with KeyboardHandler, HasGameRef<GoldRush> {
   }
 
   void stopAnimations() {
-    animation?.currentIndex = 0;
     playing = false;
 
     keyLeftPressed = false;

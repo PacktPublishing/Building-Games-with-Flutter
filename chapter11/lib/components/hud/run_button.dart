@@ -1,4 +1,6 @@
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
+import 'package:flame/experimental.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 
@@ -25,29 +27,20 @@ class RunButton extends HudButtonComponent {
   bool buttonPressed = false;
 
   @override
-  bool onTapDown(TapDownInfo info) {
-    super.onTapDown(info);
-
+  void onTapDown(TapDownEvent event) {
+    super.onTapDown(event);
     buttonPressed = true;
-
-    return true;
   }
 
   @override
-  bool onTapUp(TapUpInfo info) {
-    super.onTapUp(info);
-
+  void onTapUp(TapUpEvent event) {
+    super.onTapUp(event);
     buttonPressed = false;
-
-    return false;
   }
 
   @override
-  bool onTapCancel() {
-    super.onTapCancel();
-
+  void onTapCancel(TapCancelEvent event) {
+    super.onTapCancel(event);
     buttonPressed = false;
-
-    return true;
   }
 }

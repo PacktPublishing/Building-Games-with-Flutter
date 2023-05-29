@@ -1,18 +1,18 @@
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:goldrush/components/george.dart';
 import 'package:goldrush/utils/math_utils.dart';
 
-class Background extends PositionComponent with Tappable {
+class Background extends PositionComponent with TapCallbacks {
 
   Background(this.george) : super(priority: 20);
 
   final George george;
 
   @override
-  bool onTapUp(TapUpInfo info) {
-    george.moveToLocation(info);
+  bool onTapUp(TapUpEvent event) {
+    george.moveToLocation(event);
     return true;
   }
 

@@ -1,71 +1,116 @@
+# Migration to the latest version of flame-engine packages for the final code sample of the "Building Games with Flutter" book
 
+Big thanks to Paul Teale the author of the ["Building Games with Flutter"](https://www.amazon.com/Building-Games-Flutter-ultimate-multiplayer/dp/1801816980) book for the great content and the [code samples](https://github.com/PacktPublishing/Building-Games-with-Flutter).
+I have learned a lot from this book and I highly recommend it to anyone who wants to learn how to build games with Flutter.
 
+Since the flame-engine is rapidly evolving, the code samples needs several updates that I've implemented in this repository.
+I'd like to describe them in this README file.
 
-# Building Games with Flutter
+## Versions of packages
 
-<a href="https://www.packtpub.com/product/building-games-with-flutter/9781801816984?utm_source=github&utm_medium=repository&utm_campaign=9781801816984"><img src="https://static.packt-cdn.com/products/9781801816984/cover/smaller" alt="Building Games with Flutter" height="256px" align="right"></a>
+Increased the version of the environment sdk to ">=3.0.0 <4.0.0".
 
-This is the code repository for [Building Games with Flutter](https://www.packtpub.com/product/building-games-with-flutter/9781801816984?utm_source=github&utm_medium=repository&utm_campaign=9781801816984), published by Packt.
+The flame-engine dependencies versions are changed to the latest ones:
 
-**The ultimate guide to creating multiplayer games using the Flame engine in Flutter**
-
-## What is this book about?
-With its powerful tools and quick implementation capabilities, Flutter provides a new way to build scalable cross-platform apps. In this book, you'll learn how to build on your knowledge and use Flutter as the foundation for creating games.
-
-This book covers the following exciting features: <First 5 What you'll learn points>
-* Discover the Flame engine and how to use it in game programming in Flutter
-* Organize the graphics and sounds used in your game
-* Animate a sprite in your games and detect when the player collides with tiles
-* Run the game as a web page and desktop app
-* Expand our player control with key navigation
-
-If you feel this book is for you, get your [copy](https://www.amazon.com/dp/1801816980) today!
-
-<a href="https://www.packtpub.com/?utm_source=github&utm_medium=banner&utm_campaign=GitHubBanner"><img src="https://raw.githubusercontent.com/PacktPublishing/GitHub/master/GitHub.png" 
-alt="https://www.packtpub.com/" border="5" /></a>
-
-
-## Instructions and Navigations
-All of the code is organized into folders. For example, Chapter02.
-
-The code will look like the following:
-```
- @override
-  void render(Canvas canvas) {
-    canvas.drawRect(squarePos, squarePaint); // Draw the green square on the canvas
-  }
-
+```yaml
+flame: ^1.8.0
+flame_tiled: ^1.10.1
+flame_audio: ^2.0.2
+a_star_algorithm: ^0.3.0
+shared_preferences: ^2.1.1
 ```
 
-**Following is what you need for this book:**
-If you are a Flutter developer looking to apply your Flutter programming skills to games development, this book is for you. Basic knowledge of Dart will assist with understanding the concepts covered.
+## Replaced mixins 
 
-With the following software and hardware list you can run all code files present in the book (Chapter 1-11).
+* `Tappable` to `TapCallbacks`
+* `Collidable` to `CollisionCallbacks`
+* `HasDraggables` to `DragCallbacks`.
 
-### Software and Hardware List
+Removed some not necessary mixins usage.
 
-| Chapter  | Software required                   | OS required                        |
-| -------- | ------------------------------------| -----------------------------------|
-| 1-11       | Flutter v2.8                     | Windows, Mac OS X, and Linux (Any) |
-| 1-11        | Flame v1.0.0            | Windows, Mac OS X, and Linux (Any) |
-| 1-11        | Dart 2.16.x            | Windows, Mac OS X, and Linux (Any) |
+## Replaced classes
 
+* `TapUpInfo` to `TapUpEvent`, `TapDownInfo` to `TapDownEvent`, add `TapCancelEvent` to `onTapCancel` method. Changed their return type from `bool` to `void`. 
+* `ParticleComponent` to `ParticleSystemComponent` with `particle` named parameter.
+* `HitboxRectangle` to `RectangleHitbox`, pass the `collisionType` argument with the `CollisionType.passive` value to its constructor.
 
-We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it](https://static.packt-cdn.com/downloads/9781801816984_ColorImages.pdf).
+## Collision detection
 
-### Related products <Other books you may enjoy>
-* Flutter for Beginners – Second Edition [[Packt]](https://www.packtpub.com/product/flutter-for-beginners-second-edition/9781800565999?utm_source=github&utm_medium=repository&utm_campaign=9781800565999) [[Amazon]](https://www.amazon.com/dp/1800565992)
+Replaced argument type of the other object from `Collidable` to `PositionComponent` 
+and added the call of `super.onCollision(points, other);` in the `onCollision` overridden methods.
 
-* Flutter Cookbook [[Packt]](https://www.packtpub.com/product/flutter-cookbook/9781838823382?utm_source=github&utm_medium=repository&utm_campaign=9781838823382) [[Amazon]](https://www.amazon.com/dp/1838823387)
+Replaced the `addHitbox()` with the `add()` method call in components.  
+For instance, in case of hit-box initialization for a component with the passive collision type: 
 
-## Get to Know the Author
-**Paul Teale**
-was born and raised in Leeds, West Yorkshire before moving to London to pursue a career in software engineering. He has been a software engineer for 25+ years covering backend, web, and mobile, where he has spent the last 12 years as a mobile developer covering Android and more recently Flutter. He has worked on many large projects during his career for companies like Discovery, Sky, Shazam, Visa, NBC, and Channel 5. He is a massive sci-fi fan and loves watching all the latest movies. He is happily married for the last 15 years to Mariel where they live together in West London with their son Alfie and their 2 cats.
+```dart
+collidableType = CollidableType.passive;
+addHitbox(HitboxRectangle());
+```
 
+code is replaced to 
 
+```dart
+add(RectangleHitbox(collisionType: CollisionType.passive));
+```
 
+and in case of hitbox for a component with the active collision type: 
 
-### Download a free PDF
+```dart
+addHitbox(HitboxRectangle(relation: Vector2(0.7, 0.7))..relativeOffset = Vector2(0.0, 0.1));
+```
 
- <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
-<p align="center"> <a href="https://packt.link/free-ebook/9781801816984">https://packt.link/free-ebook/9781801816984 </a> </p>
+code is replaced with 
+
+```dart
+add(RectangleHitbox.relative(Vector2(0.7, 0.7), parentSize: size, position: Vector2(0.0, 0.1)));
+```
+
+## World and Camera
+
+Applied usage of the [World and Camera](https://docs.flame-engine.org/latest/flame/camera_component.html#world) components in `main.dart`.  
+Added custom `World` class with `HasCollisionDetection` mixin.
+
+Camera initialization logic:
+
+```dart
+camera.speed = 1;
+camera.followComponent(george, worldBounds: Rect.fromLTWH(gameScreenBounds.left, gameScreenBounds.top, 1600, 1600));
+```
+
+is changed to the new calculation of camera bounds:
+
+```dart
+final camera = CameraComponent(world: world);
+camera.follow(george);
+Rectangle rect = Rectangle.fromLTRB(
+    size.x / 2, size.y / 2, 1600 - size.x / 2, 1600 - size.y / 2);
+camera.setBounds(rect);
+camera.viewport.add(hud);
+add(camera);
+```
+
+As you can see, the `Hud` component is added to the camera viewport now. Fixed the X coordinate for the Health text in the Hud class.
+
+## TiledMap
+
+Changed logic of reading object group from layer:
+
+```dart
+final water = tiledMap.tileMap.getObjectGroupFromLayer('Water');
+final enemies = tiledMap.tileMap.getObjectGroupFromLayer('Enemies');
+```
+
+to
+
+```dart
+final water = tiledMap.tileMap.getLayer<ObjectGroup>('Water')!;
+final enemies = tiledMap.tileMap.getLayer<ObjectGroup>('Enemies')!;
+```
+
+## Further improvement notes
+
+I've noticed few issues that could fixed in the future. I didn't want to fix them now, because the main goal of this repository is to show flame-engine migration steps. 
+
+I'm new in flutter and flame-engine, so if you find any mistakes in this repository, please let me know by PR or issue.
+
+I hope this repository will be useful for someone else.

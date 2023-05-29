@@ -1,12 +1,12 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
-import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'dart:ui';
 import 'package:goldrush/utils/math_utils.dart';
 import 'package:goldrush/utils/effects.dart';
 
-class Coin extends SpriteAnimationComponent with HasHitboxes, Collidable {
+class Coin extends SpriteAnimationComponent {
 
   Coin({required Vector2 position, required Vector2 size}) :
     originalPosition = position,
@@ -19,13 +19,12 @@ class Coin extends SpriteAnimationComponent with HasHitboxes, Collidable {
   Future<void> onLoad() async {
     super.onLoad();
     
-    collidableType = CollidableType.passive;
-    
+
     var spriteImages = await Flame.images.load('coins.png');
     final spriteSheet = SpriteSheet(image: spriteImages, srcSize: size);
 
     animation = spriteSheet.createAnimation(row: 0, stepTime: 0.1, from: 0, to: 7);
-    addHitbox(HitboxRectangle());
+    add(RectangleHitbox(collisionType: CollisionType.passive));
 
     shadowLayer = ShadowLayer(super.render);
   }

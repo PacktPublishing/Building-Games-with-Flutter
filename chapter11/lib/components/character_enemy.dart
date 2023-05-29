@@ -104,7 +104,8 @@ class EnemyCharacter extends Character {
   }
 
   @override
-  void onCollision(Set<Vector2> points, Collidable other) {
+  void onCollision(Set<Vector2> points, PositionComponent other) {
+    super.onCollision(points, other);
     if (other is Water) {
       switch (currentDirection) {
         case Character.down:
