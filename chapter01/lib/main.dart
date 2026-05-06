@@ -19,7 +19,7 @@ void main() async {
   );
 }
 
-class GoldRush with Loadable, Game {
+class GoldRush with Game { 
 
   static const int squareSpeed = 250; // The speed that our square will animate
   static final squarePaint = BasicPalette.green.paint(); // The color of the square
