@@ -13,7 +13,7 @@ Particle explodingParticle(Vector2 origin, MaterialColor color) {
     generator: (i) {
       double angle = i * 30;
       double xx = origin.x  + (distanceToMove * cos(angle));
-      double yy = origin.x  + (distanceToMove * sin(angle));
+      double yy = origin.y  + (distanceToMove * sin(angle));
       Vector2 destination = Vector2(xx, yy);
 
       return ComputedParticle(renderer: (Canvas canvas, Particle particle) {
